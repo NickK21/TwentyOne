@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Blackjack.Console.Models;
+﻿using Blackjack.Console.Models;
 
 Console.WriteLine("Welcome to Blackjack");
 

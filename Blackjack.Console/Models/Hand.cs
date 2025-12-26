@@ -1,4 +1,4 @@
-using Blackjack.Console.Models;
+namespace Blackjack.Console.Models;
 
 public class Hand
 {
