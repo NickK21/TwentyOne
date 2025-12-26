@@ -6,12 +6,12 @@ Console.WriteLine("Welcome to Blackjack");
 var deck = new Deck();
 deck.Shuffle();
 
-Console.WriteLine($"Deck count: {deck.Count}");
+var hand = new Hand();
 
-for (int i = 0; i < 5; i++)
-{
-  var card = deck.Deal();
-  Console.WriteLine(card);
-}
+hand.AddCard(deck.Deal());
+hand.AddCard(deck.Deal());
+
+Console.WriteLine("Player hand:");
+Console.WriteLine(hand);
 
 Console.WriteLine($"Deck count after dealing: {deck.Count}");
