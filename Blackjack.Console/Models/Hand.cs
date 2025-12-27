@@ -1,4 +1,5 @@
 using System.Linq;
+
 namespace Blackjack.Console.Models;
 
 public class Hand
