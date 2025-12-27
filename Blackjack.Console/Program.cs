@@ -13,4 +13,6 @@ hand.AddCard(deck.Deal());
 Console.WriteLine("Player hand:");
 Console.WriteLine(hand);
 
+Console.WriteLine($"Total: {hand.GetBestTotal()}");
+
 Console.WriteLine($"Deck count after dealing: {deck.Count}");

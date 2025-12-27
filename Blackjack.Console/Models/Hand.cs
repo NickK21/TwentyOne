@@ -11,6 +11,39 @@ public class Hand
     _cards.Add(card);
   }
 
+  public int GetBestTotal()
+  {
+    int total = 0;
+    int aceCount = 0;
+
+    foreach (var card in _cards)
+    {
+      switch (card.Rank)
+      {
+        case Rank.Ace:
+          aceCount++;
+          total += 11;
+          break;
+        case Rank.King:
+        case Rank.Queen:
+        case Rank.Jack:
+          total += 10;
+          break;
+        default:
+          total += (int)card.Rank;
+          break;
+      }
+    }
+
+    while (total > 21 && aceCount > 0)
+    {
+      total -= 10;
+      aceCount--;
+    }
+
+    return total;
+  }
+
   public override string ToString()
   {
     return string.Join(", ", _cards);
