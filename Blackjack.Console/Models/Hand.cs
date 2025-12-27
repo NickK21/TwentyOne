@@ -6,6 +6,9 @@ public class Hand
 
   public IReadOnlyList<Card> Cards => _cards;
 
+public bool IsBlackjack =>
+  _cards.Count == 2 && GetBestTotal() == 21;
+
   public void AddCard(Card card)
   {
     _cards.Add(card);
