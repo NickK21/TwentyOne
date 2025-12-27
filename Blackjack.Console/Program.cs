@@ -4,7 +4,7 @@ Console.WriteLine("Welcome to TwentyOne");
 
 while (true)
 {
-  PlayRound();
+  var outcome = PlayRound();
 
   Console.WriteLine();
   Console.Write("Play again? (Y/N): ");
@@ -18,7 +18,7 @@ while (true)
   Console.WriteLine();
 }
 
-static void PlayRound()
+static RoundOutcome PlayRound()
 {
   var deck = new Deck();
   deck.Shuffle();
@@ -38,11 +38,11 @@ static void PlayRound()
   {
     Console.WriteLine();
     Console.WriteLine("Dealer hand:");
-    Console.WriteLine(dealerHand);
+    Console.WriteLine(dealerHand.ToAsciiString());
     Console.WriteLine($"Dealer total: {dealerHand.GetBestTotal()}");
     Console.WriteLine();
     Console.WriteLine("Player hand:");
-    Console.WriteLine(playerHand);
+    Console.WriteLine(playerHand.ToAsciiString());
     Console.WriteLine($"Player total: {playerHand.GetBestTotal()}");
     Console.WriteLine();
     Console.WriteLine("Result:");
@@ -50,26 +50,28 @@ static void PlayRound()
     if (playerBJ && dealerBJ)
     {
       Console.WriteLine("Both have blackjack. Push.");
+      return RoundOutcome.Push;
     }
     else if (playerBJ)
     {
       Console.WriteLine("Blackjack! Player wins.");
+      return RoundOutcome.PlayerBlackjack;
     }
     else
     {
       Console.WriteLine("Dealer has blackjack. Dealer wins.");
+      return RoundOutcome.DealerWin;
     }
 
-    return;
   }
 
   Console.WriteLine();
   Console.WriteLine("Dealer shows:");
-  Console.WriteLine(dealerHand.Cards[0]);
-
+  Console.WriteLine(dealerHand.ToAsciiStringWithHiddenSecondCard());
+  
   Console.WriteLine();
   Console.WriteLine("Player hand:");
-  Console.WriteLine(playerHand);
+  Console.WriteLine(playerHand.ToAsciiString());
   Console.WriteLine($"Total: {playerHand.GetBestTotal()}");
 
   while (true)
@@ -79,7 +81,7 @@ static void PlayRound()
     if (playerTotal > 21)
     {
       Console.WriteLine("Player busts!");
-      return;
+      return RoundOutcome.DealerWin;
     }
     
     if (playerTotal == 21)
@@ -105,7 +107,7 @@ static void PlayRound()
       
       int newTotal = playerHand.GetBestTotal();
       Console.WriteLine("Player hand:");
-      Console.WriteLine(playerHand);
+      Console.WriteLine(playerHand.ToAsciiString());
       Console.WriteLine($"Total: {newTotal}");
 
       if (newTotal == 21)
@@ -127,7 +129,7 @@ static void PlayRound()
 
   Console.WriteLine();
   Console.WriteLine("Dealer hand (revealed):");
-  Console.WriteLine(dealerHand);
+  Console.WriteLine(dealerHand.ToAsciiString());
   Console.WriteLine($"Dealer total: {dealerHand.GetBestTotal()}");
 
   while (dealerHand.GetBestTotal() < 17)
@@ -137,7 +139,7 @@ static void PlayRound()
     Console.WriteLine("Dealer draws:");
     Console.WriteLine(dealerHand.Cards[^1]);
     Console.WriteLine("Dealer hand:");
-    Console.WriteLine(dealerHand);
+    Console.WriteLine(dealerHand.ToAsciiString());
     Console.WriteLine($"Dealer total: {dealerHand.GetBestTotal()}");
   }
 
@@ -150,17 +152,21 @@ static void PlayRound()
   if (dealerTotal > 21)
   {
     Console.WriteLine("Dealer busts. Player wins!");
+    return RoundOutcome.PlayerWin;
   }
   else if (dealerTotal > finalPlayerTotal)
   {
     Console.WriteLine("Dealer wins.");
+    return RoundOutcome.DealerWin;
   }
   else if (dealerTotal < finalPlayerTotal)
   {
     Console.WriteLine("Player wins!");
+    return RoundOutcome.PlayerWin;
   }
   else
   {
     Console.WriteLine("Push. (tie)");
+    return RoundOutcome.Push;
   }
 }

@@ -1,3 +1,4 @@
+using System.Linq;
 namespace Blackjack.Console.Models;
 
 public class Hand
@@ -50,5 +51,48 @@ public bool IsBlackjack =>
   public override string ToString()
   {
     return string.Join(", ", _cards);
+  }
+
+  public string ToAsciiString()
+  {
+    if (_cards.Count == 0)
+      return "(empty hand)";
+
+    var cardLines = _cards.Select(c => c.ToAsciiLines()).ToList();
+    int height = cardLines[0].Length;
+
+    var lines = new List<string>(height);
+
+    for (int row = 0; row < height; row++)
+    {
+      lines.Add(string.Join(" ", cardLines.Select(c => c[row])));
+    }
+
+    return string.Join(Environment.NewLine, lines);
+  }
+
+  public string ToAsciiStringWithHiddenSecondCard()
+  {
+    if (_cards.Count == 0)
+      return "(empty hand)";
+
+    var first = _cards[0].ToAsciiLines();
+
+    var hidden = new[]
+    {
+      "┌─────────┐",
+      "│░░░░░░░░░│",
+      "│░░░░░░░░░│",
+      "│░░░░░░░░░│",
+      "│░░░░░░░░░│",
+      "│░░░░░░░░░│",
+      "└─────────┘"
+    };
+
+    var lines = new List<string>(first.Length);
+    for (int i = 0; i < first.Length; i++)
+      lines.Add($"{first[i]} {hidden[i]}");
+
+    return string.Join(Environment.NewLine, lines);
   }
 }
