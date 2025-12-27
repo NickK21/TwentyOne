@@ -53,14 +53,7 @@ static RoundOutcome PlayRound()
 
   if (playerBJ || dealerBJ)
   {
-    Console.WriteLine();
-    Console.WriteLine("Dealer hand:");
-    Console.WriteLine(dealerHand.ToAsciiString());
-    Console.WriteLine($"Dealer total: {dealerHand.GetBestTotal()}");
-    Console.WriteLine();
-    Console.WriteLine("Player hand:");
-    Console.WriteLine(playerHand.ToAsciiString());
-    Console.WriteLine($"Player total: {playerHand.GetBestTotal()}");
+    RenderTable(playerHand, dealerHand, hideDealerHoleCard: false);
     Console.WriteLine();
     Console.WriteLine("Result:");
 
@@ -79,7 +72,6 @@ static RoundOutcome PlayRound()
       Console.WriteLine("Dealer has blackjack. Dealer wins.");
       return RoundOutcome.DealerWin;
     }
-
   }
 
   RenderTable(playerHand, dealerHand, hideDealerHoleCard: true);
@@ -113,7 +105,6 @@ static RoundOutcome PlayRound()
       playerHand.AddCard(deck.Deal());
       RenderTable(playerHand, dealerHand, hideDealerHoleCard: true);
       int newTotal = playerHand.GetBestTotal();
-      Console.WriteLine($"Total: {newTotal}");
 
       if (newTotal == 21)
       {
