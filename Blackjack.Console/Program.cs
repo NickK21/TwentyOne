@@ -2,8 +2,14 @@
 
 Console.WriteLine("Welcome to TwentyOne");
 
+decimal chips = 500m;
+const decimal minBet = 5m;
+
 while (true)
 {
+  Console.WriteLine();
+  Console.WriteLine($"Chips: {chips}");
+
   var outcome = PlayRound();
 
   Console.WriteLine();
