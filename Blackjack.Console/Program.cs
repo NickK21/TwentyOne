@@ -18,6 +18,23 @@ while (true)
   Console.WriteLine();
 }
 
+static void RenderTable(Hand player, Hand dealer, bool hideDealerHoleCard)
+{
+  Console.Clear();
+
+  Console.WriteLine("Dealer:");
+  Console.WriteLine(hideDealerHoleCard
+    ? dealer.ToAsciiStringWithHiddenSecondCard()
+    : dealer.ToAsciiString());
+
+  Console.WriteLine($"Dealer total: {(hideDealerHoleCard ? "??" : dealer.GetBestTotal().ToString())}");
+
+  Console.WriteLine();
+  Console.WriteLine("Player:");
+  Console.WriteLine(player.ToAsciiString());
+  Console.WriteLine($"Player total: {player.GetBestTotal()}");
+}
+
 static RoundOutcome PlayRound()
 {
   var deck = new Deck();
@@ -65,14 +82,7 @@ static RoundOutcome PlayRound()
 
   }
 
-  Console.WriteLine();
-  Console.WriteLine("Dealer shows:");
-  Console.WriteLine(dealerHand.ToAsciiStringWithHiddenSecondCard());
-  
-  Console.WriteLine();
-  Console.WriteLine("Player hand:");
-  Console.WriteLine(playerHand.ToAsciiString());
-  Console.WriteLine($"Total: {playerHand.GetBestTotal()}");
+  RenderTable(playerHand, dealerHand, hideDealerHoleCard: true);
 
   while (true)
   {
@@ -101,13 +111,8 @@ static RoundOutcome PlayRound()
     if (input == "H")
     {
       playerHand.AddCard(deck.Deal());
-      Console.WriteLine();
-      Console.WriteLine("Player draws:");
-      Console.WriteLine(playerHand.Cards[^1]);
-      
+      RenderTable(playerHand, dealerHand, hideDealerHoleCard: true);
       int newTotal = playerHand.GetBestTotal();
-      Console.WriteLine("Player hand:");
-      Console.WriteLine(playerHand.ToAsciiString());
       Console.WriteLine($"Total: {newTotal}");
 
       if (newTotal == 21)
@@ -127,25 +132,19 @@ static RoundOutcome PlayRound()
     }
   }
 
+  RenderTable(playerHand, dealerHand, hideDealerHoleCard: false);
   Console.WriteLine();
-  Console.WriteLine("Dealer hand (revealed):");
-  Console.WriteLine(dealerHand.ToAsciiString());
-  Console.WriteLine($"Dealer total: {dealerHand.GetBestTotal()}");
 
   while (dealerHand.GetBestTotal() < 17)
   {
     dealerHand.AddCard(deck.Deal());
-    Console.WriteLine();
-    Console.WriteLine("Dealer draws:");
-    Console.WriteLine(dealerHand.Cards[^1]);
-    Console.WriteLine("Dealer hand:");
-    Console.WriteLine(dealerHand.ToAsciiString());
-    Console.WriteLine($"Dealer total: {dealerHand.GetBestTotal()}");
+    RenderTable(playerHand, dealerHand, hideDealerHoleCard: false);
   }
 
   int finalPlayerTotal = playerHand.GetBestTotal();
   int dealerTotal = dealerHand.GetBestTotal();
 
+  RenderTable(playerHand, dealerHand, hideDealerHoleCard: false);
   Console.WriteLine();
   Console.WriteLine("Result:");
 
