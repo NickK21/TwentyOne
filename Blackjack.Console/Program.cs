@@ -17,30 +17,47 @@ while (true)
 
   var bet = PromptForBet(chips, minBet);
   var outcome = PlayRound(bet);
+  ApplyOutcomeStats(outcome, ref hands, ref wins, ref losses, ref pushes, ref blackjacks);
   
   var delta = PayoutFor(outcome, bet);
   chips += delta;
 
   Console.WriteLine();
+  Console.WriteLine($"Outcome: {outcome}");
   Console.WriteLine(delta >= 0 ? $"+{delta} chips" : $"{delta} chips");
   Console.WriteLine($"Chips now: {chips}");
 
   if (chips < minBet)
   {
-    Console.WriteLine("Your're out of chips (or below minimum bet). Game over.");
+    Console.WriteLine("You're out of chips (or below minimum bet). Game over.");
     break;
   }
 
   Console.WriteLine();
-  Console.Write("Play again? (Y/N): ");
-  var again = Console.ReadLine()?.Trim().ToUpperInvariant();
+  if (!PromptPlayAgain())
+    break;
+}
 
-  if (again != "Y")
+Console.WriteLine();
+Console.WriteLine("Session stats:");
+Console.WriteLine($"Hands: {hands}");
+Console.WriteLine($"Wins: {wins}");
+Console.WriteLine($"Losses: {losses}");
+Console.WriteLine($"Pushes: {pushes}");
+Console.WriteLine($"Blackjacks: {blackjacks}");
+
+static bool PromptPlayAgain()
+{
+  while (true)
   {
-    break;
-  }
+    Console.Write("Play again? (Y/N): ");
+    var s = Console.ReadLine()?.Trim().ToUpperInvariant();
 
-  Console.WriteLine();
+    if (s == "Y") return true;
+    if (s == "N") return false;
+
+    Console.WriteLine("Please enter Y or N.");
+  }
 }
 
 static void RenderTable(Hand player, Hand dealer, decimal bet, bool hideDealerHoleCard)
@@ -105,6 +122,29 @@ static decimal PayoutFor(RoundOutcome outcome, decimal bet)
     RoundOutcome.PlayerBlackjack => bet * 1.5m,
     _ => 0m
   };
+}
+
+static void ApplyOutcomeStats(RoundOutcome outcome, ref int hands, 
+  ref int wins, ref int losses, ref int pushes, ref int blackjacks)
+{
+  hands++;
+
+  switch (outcome)
+  {
+    case RoundOutcome.PlayerWin:
+      wins++;
+      break;
+    case RoundOutcome.DealerWin:
+      losses++;
+      break;
+    case RoundOutcome.Push:
+      pushes++;
+      break;
+    case RoundOutcome.PlayerBlackjack:
+      wins++;
+      blackjacks++;
+      break;
+  }
 }
 
 static RoundOutcome PlayRound(decimal bet)
