@@ -10,6 +10,7 @@ while (true)
   Console.WriteLine();
   Console.WriteLine($"Chips: {chips}");
 
+  var bet = PromptForBet(chips, minBet);
   var outcome = PlayRound();
 
   Console.WriteLine();
@@ -39,6 +40,39 @@ static void RenderTable(Hand player, Hand dealer, bool hideDealerHoleCard)
   Console.WriteLine("Player:");
   Console.WriteLine(player.ToAsciiString());
   Console.WriteLine($"Player total: {player.GetBestTotal()}");
+}
+
+static decimal PromptForBet(decimal chips, decimal minBet)
+{
+  while (true)
+  {
+    Console.Write($"Bet amount (min {minBet}, max {chips}): ");
+    var raw = Console.ReadLine()?.Trim();
+
+    if (string.IsNullOrWhiteSpace(raw))
+    {
+      continue;
+    }
+
+    if (!decimal.TryParse(raw, out var bet))
+    {
+      Console.WriteLine("Please enter a number.");
+      continue;
+    }
+
+    if (bet < minBet)
+    {
+      Console.WriteLine($"Minimum bet is {minBet}.");
+      continue;
+    }
+
+    if (bet > chips)
+    {
+      Console.WriteLine("You don't have enough chips for that bet.");
+      continue;
+    }
+    return bet;
+  }
 }
 
 static RoundOutcome PlayRound()
