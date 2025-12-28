@@ -4,6 +4,11 @@ Console.WriteLine("Welcome to TwentyOne");
 
 decimal chips = 500m;
 const decimal minBet = 5m;
+int hands = 0;
+int wins = 0;
+int losses = 0;
+int pushes = 0;
+int blackjacks = 0;
 
 while (true)
 {
@@ -11,9 +16,9 @@ while (true)
   Console.WriteLine($"Chips: {chips}");
 
   var bet = PromptForBet(chips, minBet);
-  var outcome = PlayRound();
-
-  var delta = PromptForBet(chips, minBet);
+  var outcome = PlayRound(bet);
+  
+  var delta = PayoutFor(outcome, bet);
   chips += delta;
 
   Console.WriteLine();
@@ -38,9 +43,11 @@ while (true)
   Console.WriteLine();
 }
 
-static void RenderTable(Hand player, Hand dealer, bool hideDealerHoleCard)
+static void RenderTable(Hand player, Hand dealer, decimal bet, bool hideDealerHoleCard)
 {
   Console.Clear();
+  Console.WriteLine($"Bet: {bet}");
+  Console.WriteLine();
 
   Console.WriteLine("Dealer:");
   Console.WriteLine(hideDealerHoleCard
@@ -100,7 +107,7 @@ static decimal PayoutFor(RoundOutcome outcome, decimal bet)
   };
 }
 
-static RoundOutcome PlayRound()
+static RoundOutcome PlayRound(decimal bet)
 {
   var deck = new Deck();
   deck.Shuffle();
@@ -118,7 +125,7 @@ static RoundOutcome PlayRound()
 
   if (playerBJ || dealerBJ)
   {
-    RenderTable(playerHand, dealerHand, hideDealerHoleCard: false);
+    RenderTable(playerHand, dealerHand, bet, hideDealerHoleCard: false);
     Console.WriteLine();
     Console.WriteLine("Result:");
 
@@ -139,7 +146,7 @@ static RoundOutcome PlayRound()
     }
   }
 
-  RenderTable(playerHand, dealerHand, hideDealerHoleCard: true);
+  RenderTable(playerHand, dealerHand, bet, hideDealerHoleCard: true);
 
   while (true)
   {
@@ -168,7 +175,7 @@ static RoundOutcome PlayRound()
     if (input == "H")
     {
       playerHand.AddCard(deck.Deal());
-      RenderTable(playerHand, dealerHand, hideDealerHoleCard: true);
+      RenderTable(playerHand, dealerHand, bet, hideDealerHoleCard: true);
       int newTotal = playerHand.GetBestTotal();
 
       if (newTotal == 21)
@@ -188,19 +195,19 @@ static RoundOutcome PlayRound()
     }
   }
 
-  RenderTable(playerHand, dealerHand, hideDealerHoleCard: false);
+  RenderTable(playerHand, dealerHand, bet, hideDealerHoleCard: false);
   Console.WriteLine();
 
   while (dealerHand.GetBestTotal() < 17)
   {
     dealerHand.AddCard(deck.Deal());
-    RenderTable(playerHand, dealerHand, hideDealerHoleCard: false);
+    RenderTable(playerHand, dealerHand, bet, hideDealerHoleCard: false);
   }
 
   int finalPlayerTotal = playerHand.GetBestTotal();
   int dealerTotal = dealerHand.GetBestTotal();
 
-  RenderTable(playerHand, dealerHand, hideDealerHoleCard: false);
+  RenderTable(playerHand, dealerHand, bet, hideDealerHoleCard: false);
   Console.WriteLine();
   Console.WriteLine("Result:");
 
