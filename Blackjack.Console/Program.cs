@@ -13,6 +13,19 @@ while (true)
   var bet = PromptForBet(chips, minBet);
   var outcome = PlayRound();
 
+  var delta = PromptForBet(chips, minBet);
+  chips += delta;
+
+  Console.WriteLine();
+  Console.WriteLine(delta >= 0 ? $"+{delta} chips" : $"{delta} chips");
+  Console.WriteLine($"Chips now: {chips}");
+
+  if (chips < minBet)
+  {
+    Console.WriteLine("Your're out of chips (or below minimum bet). Game over.");
+    break;
+  }
+
   Console.WriteLine();
   Console.Write("Play again? (Y/N): ");
   var again = Console.ReadLine()?.Trim().ToUpperInvariant();
@@ -73,6 +86,18 @@ static decimal PromptForBet(decimal chips, decimal minBet)
     }
     return bet;
   }
+}
+
+static decimal PayoutFor(RoundOutcome outcome, decimal bet)
+{
+  return outcome switch
+  {
+    RoundOutcome.PlayerWin => bet,
+    RoundOutcome.DealerWin => -bet,
+    RoundOutcome.Push => 0m,
+    RoundOutcome.PlayerBlackjack => bet * 1.5m,
+    _ => 0m
+  };
 }
 
 static RoundOutcome PlayRound()
